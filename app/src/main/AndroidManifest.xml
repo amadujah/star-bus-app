@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        tools:targetApi="m"
+        tools:ignore="AllowBackup">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +25,10 @@
         </activity>
 
 
-        <service android:name=".DownloadService" />
-        <service android:name=".DownloadZipService" />
+        <service android:name=".service.DownloadService" />
 
         <receiver
-            android:name=".DownloadReceiver"
+            android:name=".service.DownloadReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

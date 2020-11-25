@@ -1,4 +1,4 @@
-package fr.istic.mob.star.star1adrk
+package fr.istic.mob.star.star1adrk.service
 
 import android.app.DownloadManager
 import android.app.NotificationChannel
@@ -12,17 +12,15 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.room.Room
 import com.google.gson.Gson
-import fr.istic.mob.star.star1adrk.DownloadService.Companion.DOWNLOAD_PATH
-import fr.istic.mob.star.star1adrk.DownloadService.Companion.getDownloadService
-import fr.istic.mob.star.star1adrk.database.AppDatabase
-import fr.istic.mob.star.star1adrk.database.Version
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
+import fr.istic.mob.star.star1adrk.R
+import fr.istic.mob.star.star1adrk.database.models.Version
+import fr.istic.mob.star.star1adrk.service.DownloadService.Companion.getDownloadService
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 
 
 class DownloadReceiver : BroadcastReceiver() {
@@ -31,10 +29,7 @@ class DownloadReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action
 
-        val db = Room.databaseBuilder(
-            context,
-            AppDatabase::class.java, "star_db"
-        ).build()
+
 
         if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
             val query = DownloadManager.Query()
@@ -58,8 +53,8 @@ class DownloadReceiver : BroadcastReceiver() {
                         if (downloadId == intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0))
                             saveJsonInfoFileToDB(context)
                         else {
-                            //unzip
-                            //extract txt
+                            //get zip name from preference
+                            unzipDatabase("GTFS_2020.3.2_20201123_20201220.zip", context)
                         }
                     } else {
                         val message: Int =
@@ -69,6 +64,33 @@ class DownloadReceiver : BroadcastReceiver() {
                     }
                 }
             }
+        }
+    }
+
+    private fun unzipDatabase(filename: String, context: Context) {
+        try {
+            val fileInputStream = FileInputStream(context.getExternalFilesDir(null)?.path +"/" + filename)
+            val zipInputStream = ZipInputStream(fileInputStream)
+            var zipEntry: ZipEntry?
+            while ((zipInputStream.nextEntry.also { zipEntry = it }) != null) {
+                Log.d("Decompress", "Unzipping " + zipEntry?.name)
+                val outputStream =
+                    FileOutputStream(context.getExternalFilesDir(null)?.path + "/" + zipEntry?.name)
+                val bufferedOutputStream = BufferedOutputStream(outputStream)
+                val buffer = ByteArray(1024)
+                var read: Int
+                while (zipInputStream.read(buffer).also { read = it } != -1) {
+                    bufferedOutputStream.write(buffer, 0, read)
+                }
+                bufferedOutputStream.close()
+                zipInputStream.closeEntry()
+                outputStream.close()
+
+            }
+            zipInputStream.close()
+        } catch (e: Exception) {
+            Log.e("Decompress", "unzip", e)
+            Log.d("Unzip", "Unzipping failed")
         }
     }
 

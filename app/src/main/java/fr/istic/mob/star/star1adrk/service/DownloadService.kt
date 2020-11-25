@@ -1,10 +1,11 @@
-package fr.istic.mob.star.star1adrk
+package fr.istic.mob.star.star1adrk.service
 
 import android.app.DownloadManager
 import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import fr.istic.mob.star.star1adrk.R
 import java.io.File
 
 

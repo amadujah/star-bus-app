@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import fr.istic.mob.star.star1adrk.service.DownloadService
 
 class MainActivity : AppCompatActivity() {
     private val WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 100

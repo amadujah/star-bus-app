@@ -1,4 +1,4 @@
-package fr.istic.mob.star.star1adrk.database
+package fr.istic.mob.star.star1adrk.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

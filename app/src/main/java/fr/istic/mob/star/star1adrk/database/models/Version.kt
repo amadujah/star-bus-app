@@ -1,4 +1,4 @@
-package fr.istic.mob.star.star1adrk.database
+package fr.istic.mob.star.star1adrk.database.models
 
 import com.google.gson.annotations.SerializedName
 

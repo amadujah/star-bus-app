@@ -1,0 +1,11 @@
+package fr.istic.mob.star.star1adrk.database;
+
+public class ArretTime {
+    public String nom ;
+    public String heur ;
+
+    public ArretTime(String nom, String heur) {
+        this.nom = nom;
+        this.heur = heur;
+    }
+}

@@ -11,10 +11,6 @@ import java.io.File
 
 class DownloadService : IntentService("DownloadingService") {
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
     override fun onHandleIntent(intent: Intent?) {
         val downloadPath = intent?.getStringExtra(DOWNLOAD_PATH)
 
@@ -37,9 +33,11 @@ class DownloadService : IntentService("DownloadingService") {
 
     private fun startDownload(downloadPath: String, context: Context) {
         val uri = Uri.parse(downloadPath)
+        var downloadTitle = ""
 
         val isZipDownload: Boolean = downloadPath.endsWith(".zip")
         if (!isZipDownload) {
+            downloadTitle = "Downloading json file"
             val file = File(
                 context.getExternalFilesDir(null)?.path,
                 "/tco-busmetro-horaires-gtfs-versions-td.json"
@@ -49,6 +47,7 @@ class DownloadService : IntentService("DownloadingService") {
                 file.delete()
 
         } else {
+            downloadTitle = "Downloading zip file"
             val file = File(
                 context.getExternalFilesDir(null)?.path,
                 uri.lastPathSegment!!
@@ -61,7 +60,7 @@ class DownloadService : IntentService("DownloadingService") {
         val request = DownloadManager.Request(uri)
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI) // Tell on which network you want to download file.
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED) // This will show notification on top when downloading the file.
-        request.setTitle("Downloading a file") // Title for notification.
+        request.setTitle(downloadTitle) // Title for notification.
         request.addRequestHeader("Content-type", "application/octet-stream")
         request.setMimeType("application/octet-stream")
         val downloadPathArray = downloadPath.split("/")

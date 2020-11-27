@@ -10,18 +10,15 @@ import fr.istic.mob.star.star1adrk.database.models.StopTime
 @Dao
 interface StopTimeDao {
 
-    @Query("SELECT * FROM stoptime")
-    fun loadAllStopTimes(): Cursor
+    @Query("SELECT * FROM stop_time")
+    fun loadAllStopTimes(): List<StopTime>
 
     @Insert
-    fun insertStopTime(stopTime: StopTime)
+    fun insert(stopTime: StopTime)
 
-   @Query("DELETE FROM stoptime")
-    fun delete()
+   @Query("DELETE FROM stop_time")
+    fun deleteAll()
 
-   @Query("SELECT * FROM stoptime WHERE id = :id")
+   @Query("SELECT * FROM stop_time WHERE id = :id")
     fun loadStopTimeById(id: Int): StopTime
-
-    @Query("SELECT * FROM stoptime WHERE trip_id = :segment1")
-    fun getStopTimeTrip(segment1: StopTime): Cursor
 }

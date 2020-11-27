@@ -5,18 +5,18 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "stoptime")
+@Entity(tableName = "stop_time")
 data class StopTime(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int?,
     @ColumnInfo(name = "trip_id")
-    val trip_id: String,
+    val tripId: String,
     @ColumnInfo(name = "arrival_time")
-    val arrival_time: String,
+    val arrivalTime: String,
     @ColumnInfo(name = "departure_time")
-    val departure_time: String,
+    val departureTime: String,
     @ColumnInfo(name = "stop_id")
-    val stop_id: String,
+    val stopId: String,
     @ColumnInfo(name = "stop_sequence")
-    val stop_sequence: String
+    val stopSequence: String
 )

@@ -14,17 +14,17 @@ interface TripDao {
     fun loadAllTrip(): List<Trip>
 
     @Insert
-    fun insertTrip(trip: Trip)
+    fun insert(trip: Trip)
 
     @Query("DELETE FROM trip")
-    fun delete()
+    fun deleteAll()
 
     @Query("SELECT * FROM trip WHERE trip_id = :tripId")
     fun loadTripByTripId(tripId: Int): Trip
 
     @Query("SELECT * FROM trip WHERE trip.route_id = :selectionArgs0 AND trip.direction_id = :selectionArgs1")
-    fun getTrips(selectionArgs0: String, selectionArgs1: String): Cursor
+    fun getTrips(selectionArgs0: String, selectionArgs1: String): List<Trip>
 
     @Query("SELECT * FROM trip WHERE route_id = :segment1")
-    fun load(segment1: String): Cursor
+    fun load(segment1: String): List<Trip>
 }

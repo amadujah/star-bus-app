@@ -8,17 +8,17 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "stop")
 data class Stop(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int?,
     @ColumnInfo(name = "stop_id")
     val stopId: String,
     @ColumnInfo(name = "stop_name")
-    val stop_name: String,
+    val stopName: String,
     @ColumnInfo(name = "stop_desc")
-    val stop_desc: String,
+    val stopDesc: String,
     @ColumnInfo(name = "stop_lat")
-    val stop_lat: String,
+    val stopLat: String,
     @ColumnInfo(name = "stop_lon")
-    val stop_lon: String,
+    val stopLon: String,
     @ColumnInfo(name = "wheelchair_boarding")
-    val wheelchair_boarding: String,
+    val wheelchairBoarding: String,
 )

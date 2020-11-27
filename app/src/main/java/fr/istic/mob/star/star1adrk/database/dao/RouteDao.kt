@@ -5,23 +5,20 @@ import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import fr.istic.mob.star.star1adrk.database.models.BusRoute
+import fr.istic.mob.star.star1adrk.database.models.Route
 
 @Dao
 interface RouteDao {
 
-    @Query("SELECT * FROM busroute ORDER BY route_id")
+    @Query("SELECT * FROM route ORDER BY route_id")
     fun loadAllRoutes(): Cursor
 
-    @Query("SELECT route_short_name FROM busroute ORDER BY route_id")
+    @Query("SELECT route_short_name FROM route ORDER BY route_id")
     fun loadAllRouteShortName(): List<String>
 
     @Insert
-    fun insertRoute(busRoute: BusRoute)
+    fun insert(route: Route)
 
-    @Query("DELETE FROM busroute")
-    fun delete()
-
-    @Query("SELECT route_long_name FROM busroute ORDER BY id")
-    fun loadRouteByDirectory(): List<String>
+    @Query("DELETE FROM route")
+    fun deleteAll()
 }

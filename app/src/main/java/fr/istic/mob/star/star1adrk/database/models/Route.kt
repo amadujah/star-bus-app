@@ -5,10 +5,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "busroute")
-data class BusRoute(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
+@Entity(tableName = "route")
+data class Route(
+    @PrimaryKey
     @ColumnInfo(name = "route_id")
     val routeId: String,
     @ColumnInfo(name = "route_short_name")

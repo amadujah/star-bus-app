@@ -2,7 +2,7 @@ package fr.istic.mob.star.star1adrk.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import fr.istic.mob.star.star1adrk.data.History
+import fr.istic.mob.star.star1adrk.model.History
 
 @Dao
 interface HistoryDao {

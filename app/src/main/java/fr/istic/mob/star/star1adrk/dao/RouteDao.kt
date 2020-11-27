@@ -2,7 +2,7 @@ package fr.istic.mob.star.star1adrk.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import fr.istic.mob.star.star1adrk.data.Route
+import fr.istic.mob.star.star1adrk.model.Route
 
 @Dao
 interface RouteDao {

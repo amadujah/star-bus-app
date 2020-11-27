@@ -2,7 +2,7 @@ package fr.istic.mob.star.star1adrk.repository
 
 import androidx.lifecycle.LiveData
 import fr.istic.mob.star.star1adrk.dao.RouteDao
-import fr.istic.mob.star.star1adrk.data.Route
+import fr.istic.mob.star.star1adrk.model.Route
 
 class RouteRepository(private val routeDao: RouteDao) {
 

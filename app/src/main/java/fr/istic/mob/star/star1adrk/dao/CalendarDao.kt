@@ -2,7 +2,7 @@ package fr.istic.mob.star.star1adrk.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import fr.istic.mob.star.star1adrk.data.Calendar
+import fr.istic.mob.star.star1adrk.model.Calendar
 
 @Dao
 interface CalendarDao {

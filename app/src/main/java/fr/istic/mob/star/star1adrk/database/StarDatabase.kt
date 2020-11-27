@@ -1,15 +1,14 @@
 package fr.istic.mob.star.star1adrk.database
 
 import android.content.Context
-import android.os.strictmode.InstanceCountViolation
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
+import fr.istic.mob.star.star1adrk.Utils.DateConverters
 import fr.istic.mob.star.star1adrk.dao.*
-import fr.istic.mob.star.star1adrk.data.*
+import fr.istic.mob.star.star1adrk.model.*
 
 @Database(entities = [Calendar::class, History::class, Route::class, Stop::class, Stop_times::class, Trip::class],
           version = 1, exportSchema = false)
+@TypeConverters(DateConverters::class)
 abstract class StarDatabase : RoomDatabase() {
 
     abstract fun calendarDao(): CalendarDao
@@ -32,7 +31,7 @@ abstract class StarDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     StarDatabase::class.java,
-                    "Star_database"
+                    "star.db"
                 ).build()
                 INSTANCE = instance
                 return instance

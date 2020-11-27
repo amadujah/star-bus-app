@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(tableName = "calendar")
-class Calendar (
+data class Calendar (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "service_id") val serviceId: Int,
     val monday: String,

@@ -3,6 +3,7 @@ package fr.istic.mob.star.star1adrk.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import fr.istic.mob.star.star1adrk.model.Stop
+import fr.istic.mob.star.star1adrk.model.relationships.StopsWithStopTimes
 
 @Dao
 interface StopDao {
@@ -15,6 +16,10 @@ interface StopDao {
 
     @Query("SELECT * FROM stop ORDER BY id ASC")
     fun getStops(): LiveData<List<Stop>>
+
+    @Transaction
+    @Query("SELECT * FROM stop")
+    fun getStopsWithStopTimes(): List<StopsWithStopTimes>
 
     @Delete
     fun deleteStop(stop: Stop)

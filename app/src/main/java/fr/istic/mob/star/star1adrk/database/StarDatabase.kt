@@ -6,7 +6,7 @@ import fr.istic.mob.star.star1adrk.Utils.DateConverters
 import fr.istic.mob.star.star1adrk.dao.*
 import fr.istic.mob.star.star1adrk.model.*
 
-@Database(entities = [Calendar::class, History::class, Route::class, Stop::class, Stop_times::class, Trip::class],
+@Database(entities = [Calendar::class, History::class, Route::class, Stop::class, StopTime::class, Trip::class],
           version = 1, exportSchema = false)
 @TypeConverters(DateConverters::class)
 abstract class StarDatabase : RoomDatabase() {

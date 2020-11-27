@@ -3,6 +3,7 @@ package fr.istic.mob.star.star1adrk.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import fr.istic.mob.star.star1adrk.model.Trip
+import fr.istic.mob.star.star1adrk.model.relationships.TripsWithStopTimes
 
 @Dao
 interface TripDao {
@@ -15,6 +16,10 @@ interface TripDao {
 
     @Query("SELECT * FROM trip ORDER BY id ASC")
     fun getTrips(): LiveData<List<Trip>>
+
+    @Transaction
+    @Query("SELECT * FROM trip ORDER BY id ASC")
+    fun getTripsWithStopTimes(): List<TripsWithStopTimes>
 
     @Delete
     fun deleteTrip(trip: Trip)

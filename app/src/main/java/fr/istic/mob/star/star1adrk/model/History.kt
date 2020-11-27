@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "history")
-class History (
+data class History (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     @ColumnInfo(name = "dataset_id") val datasetId: String,

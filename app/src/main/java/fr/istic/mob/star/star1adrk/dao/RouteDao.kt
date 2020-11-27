@@ -3,6 +3,7 @@ package fr.istic.mob.star.star1adrk.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import fr.istic.mob.star.star1adrk.model.Route
+import fr.istic.mob.star.star1adrk.model.relationships.RouteWithTrips
 
 @Dao
 interface RouteDao {
@@ -21,4 +22,8 @@ interface RouteDao {
 
     @Delete
     fun deleteRoutes(routes: List<Route>)
+
+    @Transaction
+    @Query("SELECT * FROM route ORDER BY id ASC")
+    fun getRoutesWithTrips(): List<RouteWithTrips>
 }

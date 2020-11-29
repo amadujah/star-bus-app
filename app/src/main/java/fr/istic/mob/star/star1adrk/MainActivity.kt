@@ -1,6 +1,8 @@
 package fr.istic.mob.star.star1adrk
 
 import android.Manifest
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.pm.PackageManager
 import android.opengl.Visibility
 import android.os.Build
@@ -18,7 +20,22 @@ import fr.istic.mob.star.star1adrk.task.*
 import fr.istic.mob.star.star1adrk.utils.*
 import java.util.*
 
-class MainActivity : AppCompatActivity(), Observer, SaveDataCallbacks, AdapterView.OnItemSelectedListener {
+class MainActivity : AppCompatActivity(), Observer, SaveDataCallbacks, AdapterView.OnItemSelectedListener,
+                     DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+
+    var day = 0
+    var month = 0
+    var year = 0
+    var hour = 0
+    var minute = 0
+
+    var savedDay = 0
+    var savedMonth = 0
+    var savedYear = 0
+    var savedHour = 0
+    var savedMinute = 0
+
+
     private val WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 100
     private var fileUrl =
         "https://data.explore.star.fr/explore/dataset/tco-busmetro-horaires-gtfs-versions-td/download/?format=json&timezone=Europe/Berlin&lang=fr"
@@ -27,6 +44,7 @@ class MainActivity : AppCompatActivity(), Observer, SaveDataCallbacks, AdapterVi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        pickDate()
 
         // Spinner
         val db = AppDatabase.getInstance(this)
@@ -157,5 +175,47 @@ class MainActivity : AppCompatActivity(), Observer, SaveDataCallbacks, AdapterVi
 
     override fun onNothingSelected(parent: AdapterView<*>) {
         // Another interface callback
+    }
+
+    // select date
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        savedDay = dayOfMonth
+        savedMonth = month
+        savedYear = year
+        getDateTimeCalendar()
+        TimePickerDialog(this, this, hour, minute, true).show()
+    }
+
+    // select time
+    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
+        val datePicker = findViewById<TextView>(R.id.date_picker)
+        val timePicker = findViewById<TextView>(R.id.time_picker)
+
+        savedHour = hourOfDay
+        savedMinute = minute
+        datePicker.text = "$savedDay-$savedMonth-$savedYear"
+        timePicker.text = "$savedHour:$savedMinute"
+    }
+
+    private fun getDateTimeCalendar(){
+        val cal = Calendar.getInstance()
+        day = cal.get(Calendar.DAY_OF_MONTH)
+        month = cal.get(Calendar.MONTH)
+        year = cal.get(Calendar.YEAR)
+        hour = cal.get(Calendar.HOUR)
+        minute = cal.get(Calendar.MINUTE)
+    }
+
+    private fun pickDate(){
+        val datePicker = findViewById<TextView>(R.id.date_picker)
+        /*val textView: TextView = findViewById(R.id.date_picker) as TextView
+        textView.setOnClickListener {
+            textView.text = ""
+        }*/
+        datePicker.setOnClickListener {
+            getDateTimeCalendar()
+
+            DatePickerDialog(this, this, year, month, day).show()
+        }
     }
 }

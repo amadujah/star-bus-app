@@ -1,4 +1,4 @@
-package fr.istic.mob.star.star1adrk.database
+package fr.istic.mob.star.star1adrk.database.dao
 
 import androidx.room.Dao
 

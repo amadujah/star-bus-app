@@ -11,5 +11,5 @@ interface HistoryDao {
     fun getHistoryById(recordId: String): History
 
     @Insert
-    fun insertVersion(history: History)
+    fun insert(history: History)
 }

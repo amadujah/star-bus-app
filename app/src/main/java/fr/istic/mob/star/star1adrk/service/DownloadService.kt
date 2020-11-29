@@ -6,6 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import fr.istic.mob.star.star1adrk.R
+import fr.istic.mob.star.star1adrk.utils.DOWNLOAD_FINISHED
+import fr.istic.mob.star.star1adrk.utils.DOWNLOAD_STARTED
+import fr.istic.mob.star.star1adrk.utils.ObservableObject
 import java.io.File
 
 
@@ -33,7 +36,7 @@ class DownloadService : IntentService("DownloadingService") {
 
     private fun startDownload(downloadPath: String, context: Context) {
         val uri = Uri.parse(downloadPath)
-        var downloadTitle = ""
+        val downloadTitle: String
 
         val isZipDownload: Boolean = downloadPath.endsWith(".zip")
         if (!isZipDownload) {
@@ -47,6 +50,7 @@ class DownloadService : IntentService("DownloadingService") {
                 file.delete()
 
         } else {
+            ObservableObject.instance.updateValue(DOWNLOAD_STARTED)
             downloadTitle = "Downloading zip file"
             val file = File(
                 context.getExternalFilesDir(null)?.path,

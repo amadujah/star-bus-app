@@ -18,8 +18,8 @@ interface StopDao {
     @Query("DELETE FROM stop")
     fun deleteAll()
 
-    @Query("SELECT * FROM stop WHERE id = :stopId")
-    fun loadStopByStopId(stopId: Int): Stop
+    @Query("SELECT * FROM stop WHERE stop_id = :stopId")
+    fun loadStopByStopId(stopId: String): Stop
 
     @Query(
         "SELECT * FROM stop, stop_time, trip WHERE stop.stop_id = stop_time.stop_id " +

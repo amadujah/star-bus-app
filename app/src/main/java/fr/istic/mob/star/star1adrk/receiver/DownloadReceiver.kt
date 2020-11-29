@@ -13,20 +13,22 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.google.gson.Gson
 import fr.istic.mob.star.star1adrk.R
 import fr.istic.mob.star.star1adrk.database.AppDatabase
-import fr.istic.mob.star.star1adrk.database.models.*
-import fr.istic.mob.star.star1adrk.database.models.Calendar
 import fr.istic.mob.star.star1adrk.service.DownloadService.Companion.getDownloadService
-import fr.istic.mob.star.star1adrk.utils.*
-import java.io.*
+import fr.istic.mob.star.star1adrk.utils.DOWNLOAD_FINISHED
+import fr.istic.mob.star.star1adrk.utils.ObservableObject
+import fr.istic.mob.star.star1adrk.utils.ZIP_FOLDER
+import fr.istic.mob.star.star1adrk.utils.getHistoriesFromJson
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import kotlin.concurrent.schedule
 
 private val TAG = "DownloadReceiver"
 
@@ -77,7 +79,10 @@ class DownloadReceiver : BroadcastReceiver() {
                                 0
                             )
                         ) {
-                            //todo retry download after some delay
+                            Timer("SettingUp", false).schedule(5000) {
+                                //todo getDownloadService(context, downloadPath)
+                                Toast.makeText(context, "", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
@@ -86,40 +91,24 @@ class DownloadReceiver : BroadcastReceiver() {
     }
 
     private fun saveJsonInfoFileToDB(context: Context) {
-        val db = AppDatabase.getInstance(context)
-        val historyDao = db?.historyDao()
-        val file = File(
-            context.getExternalFilesDir(null)?.path, "/tco-busmetro-horaires-gtfs-versions-td.json"
-        )
-
-        val fileReader = FileReader(file)
-        val bufferedReader = BufferedReader(fileReader)
-        val stringBuilder = StringBuilder()
-        var line: String? = bufferedReader.readLine()
-        while (line != null) {
-            stringBuilder.append(line).append("\n")
-            line = bufferedReader.readLine()
-        }
-        bufferedReader.close()
-
-        val response = stringBuilder.toString()
-        val histories = Gson().fromJson(response, Array<History>::class.java)
+        val histories = getHistoriesFromJson(context)
 
         val simpleFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
 
-        val todayDate = Date()
+        val todayDate = simpleFormat.parse(simpleFormat.format(Date())) ?: return
         //check if record id is not in the database if so download else show toast
-        histories.forEach {
+        histories?.forEach {
             val recordId = it.recordId
+            val db = AppDatabase.getInstance(context)
+            val historyDao = db?.historyDao()
             val history = historyDao?.getHistoryById(recordId)
             if (history != null) {
                 Toast.makeText(context, "Database already existed", Toast.LENGTH_SHORT).show()
             } else {
-                historyDao?.insertVersion(History(null, it.dbInfo, recordId))
-                if (todayDate.after(simpleFormat.parse(it.dbInfo.validityStart))
-                    && todayDate.before(
-                        simpleFormat.parse(it.dbInfo.validityEnd)
-                    )
+                if (todayDate >= simpleFormat.parse(it.dbInfo.validityStart)
+                    && todayDate <=
+                    simpleFormat.parse(it.dbInfo.validityEnd)
+
                 ) {
                     val url = it.dbInfo.url
                     showNotification(context, url)
@@ -157,138 +146,12 @@ class DownloadReceiver : BroadcastReceiver() {
             zipInputStream.close()
             fileInputStream.close()
 
-            saveTxtFilesToDB(context)
+            ObservableObject.instance.updateValue(DOWNLOAD_FINISHED)
         } catch (e: Exception) {
             Log.e("Decompress", "unzip", e)
             Log.d("Unzip", "Unzipping failed")
 
-            saveTxtFilesToDB(context)
-        }
-    }
-
-    private fun saveTxtFilesToDB(context: Context) {
-        //Clear database previous content
-        val db = AppDatabase.getInstance(context)
-        db?.routeDao()?.deleteAll()
-        db?.stopDao()?.deleteAll()
-        db?.tripDao()?.deleteAll()
-        db?.stopTimeDao()?.deleteAll()
-        db?.calendarDao()?.deleteAll()
-        //test
-        saveStopTimeData(context)
-
-        saveCalendarData(context)
-        saveRouteData(context)
-        //apres quelques temps afficher la liste des routes
-
-        saveTripData(context)
-        saveStopData(context)
-        saveStopTimeData(context)
-    }
-
-    private fun saveRouteData(context: Context) {
-        val lines: List<String> = File(context.getExternalFilesDir(null)?.path, ROUTES).readLines()
-        val routeDao = AppDatabase.getInstance(context)?.routeDao()
-        for (i in 1 until lines.size) {
-            val line = lines[i]
-            val properties = line.split(",")
-            routeDao?.insert(
-                Route(
-                    routeId = properties[0].replace("\"", ""),
-                    routeShortName = properties[2].replace("\"", ""),
-                    routeLongName = properties[3].replace("\"", ""),
-                    routeDesc = properties[4].replace("\"", ""),
-                    routeType = properties[5].replace("\"", ""),
-                    routeColor = properties[7].replace("\"", ""),
-                    routeTextColor = properties[8].replace("\"", ""),
-                )
-            )
-        }
-    }
-
-    private fun saveTripData(context: Context) {
-        val lines: List<String> = File(context.getExternalFilesDir(null)?.path, TRIPS).readLines()
-        val tripDao = AppDatabase.getInstance(context)?.tripDao()
-        for (i in 1 until lines.size) {
-            val line = lines[i]
-            val properties = line.split(",")
-            properties.forEach {
-                it.replace("\"", "")
-            }
-            tripDao?.insert(
-                Trip(
-                    routeId = properties[0].replace("\"", ""),
-                    serviceId = properties[1].replace("\"", ""),
-                    tripId = properties[2].replace("\"", "").replace("\"", ""),
-                    tripHeadSign = properties[3].replace("\"", ""),
-                    directionId = properties[5].replace("\"", ""),
-                    blockId = properties[6].replace("\"", ""),
-                    wheelchairAccessible = properties[8].replace("\"", ""),
-                )
-            )
-        }
-    }
-
-    private fun saveStopData(context: Context) {
-        val lines: List<String> = File(context.getExternalFilesDir(null)?.path, STOPS).readLines()
-        val stopDao = AppDatabase.getInstance(context)?.stopDao()
-        for (i in 1 until lines.size) {
-            val line = lines[i]
-            val properties = line.split(",")
-
-            stopDao?.insert(
-                Stop(
-                    id = null,
-                    stopId = properties[0].replace("\"", ""),
-                    stopName = properties[2].replace("\"", ""),
-                    stopDesc = properties[3].replace("\"", ""),
-                    stopLat = properties[4].replace("\"", ""),
-                    stopLon = properties[5].replace("\"", ""),
-                    wheelchairBoarding = properties[11].replace("\"", ""),
-                )
-            )
-        }
-    }
-
-    private fun saveStopTimeData(context: Context) {
-        val lines: List<String> = File(context.getExternalFilesDir(null)?.path, STOP_TIMES).readLines()
-        val stopTimeDao = AppDatabase.getInstance(context)?.stopTimeDao()
-        for (i in 1 until lines.size) {
-            val line = lines[i]
-            val properties = line.split(",")
-            stopTimeDao?.insert(
-                StopTime(
-                    id = null,
-                    tripId = properties[0].replace("\"", ""),
-                    arrivalTime = properties[1].replace("\"", ""),
-                    departureTime = properties[2].replace("\"", ""),
-                    stopId = properties[3].replace("\"", ""),
-                    stopSequence = properties[4].replace("\"", ""),
-                )
-            )
-        }
-    }
-
-    private fun saveCalendarData(context: Context) {
-        val lines: List<String> = File(context.getExternalFilesDir(null)?.path, CALENDAR).readLines()
-        val calendarDao = AppDatabase.getInstance(context)?.calendarDao()
-        for (i in 1 until lines.size) {
-            val line = lines[i]
-            val properties = line.split(",")
-            calendarDao?.insert(
-                Calendar(
-                    serviceId = properties[0].replace("\"", ""),
-                    monday = properties[1].replace("\"", ""),
-                    tuesday = properties[2].replace("\"", ""),
-                    wednesday = properties[3].replace("\"", ""),
-                    thursday = properties[4].replace("\"", ""),
-                    friday = properties[5].replace("\"", ""),
-                    saturday = properties[6].replace("\"", ""),
-                    sunday = properties[7].replace("\"", ""),
-                    startDate = properties[8].replace("\"", ""),
-                    endDate = properties[8].replace("\"", ""),
-                )
-            )
+            ObservableObject.instance.updateValue(DOWNLOAD_FINISHED)
         }
     }
 

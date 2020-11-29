@@ -18,7 +18,4 @@ interface StopTimeDao {
 
    @Query("DELETE FROM stop_time")
     fun deleteAll()
-
-   @Query("SELECT * FROM stop_time WHERE id = :id")
-    fun loadStopTimeById(id: Int): StopTime
 }

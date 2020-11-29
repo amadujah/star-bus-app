@@ -3,11 +3,11 @@ package fr.istic.mob.star.star1adrk.database.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
 
 @Entity(tableName = "calendar")
 data class Calendar(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    val id: Int?,
     @ColumnInfo(name = "service_id") val serviceId: String,
     @ColumnInfo(name = "monday")
     val monday: String,

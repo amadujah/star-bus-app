@@ -7,8 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "stop")
 data class Stop(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int?,
+    @PrimaryKey
     @ColumnInfo(name = "stop_id")
     val stopId: String,
     @ColumnInfo(name = "stop_name")

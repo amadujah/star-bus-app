@@ -12,7 +12,7 @@ import fr.istic.mob.star.star1adrk.utils.DateConverters
 
 @Database(
     entities = [DatabaseInfo::class, History::class, Route::class, Calendar::class, Stop::class, StopTime::class, Trip::class],
-    version = 2
+    version = 1
 )
 @TypeConverters(DatabaseInfoConverter::class, DateConverters::class)
 abstract class AppDatabase : RoomDatabase() {

@@ -11,7 +11,7 @@ import fr.istic.mob.star.star1adrk.database.models.Route
 interface RouteDao {
 
     @Query("SELECT * FROM route ORDER BY route_id")
-    fun loadAllRoutes(): Cursor
+    fun loadAllRoutes(): List<Route>
 
     @Query("SELECT route_short_name FROM route ORDER BY route_id")
     fun loadAllRouteShortName(): List<String>

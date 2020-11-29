@@ -13,6 +13,9 @@ interface TripDao {
     @Query("SELECT * FROM trip ORDER BY trip_id")
     fun loadAllTrip(): List<Trip>
 
+    @Query("SELECT * FROM trip ORDER BY trip_id")
+    fun loadAllTripByRouteId(): List<Trip>
+
     @Insert
     fun insert(trip: Trip)
 

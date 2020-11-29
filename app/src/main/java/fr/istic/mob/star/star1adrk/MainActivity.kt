@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.pm.PackageManager
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -13,12 +12,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import fr.istic.mob.star.star1adrk.database.AppDatabase
-import fr.istic.mob.star.star1adrk.database.dao.RouteDao
 import fr.istic.mob.star.star1adrk.database.models.Route
 import fr.istic.mob.star.star1adrk.service.DownloadService
 import fr.istic.mob.star.star1adrk.task.*
 import fr.istic.mob.star.star1adrk.utils.*
 import java.util.*
+import android.util.Log
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), Observer, SaveDataCallbacks, AdapterView.OnItemSelectedListener,
                      DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -44,13 +44,13 @@ class MainActivity : AppCompatActivity(), Observer, SaveDataCallbacks, AdapterVi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // selectDate
         pickDate()
 
-        // Spinner
+        // Spinner routes
         val db = AppDatabase.getInstance(this)
         val routes: List<Route> = db?.routeDao()?.loadAllRoutes()!!
         val spinner = findViewById<Spinner>(R.id.spinner2)
-
         spinner.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
@@ -62,6 +62,21 @@ class MainActivity : AppCompatActivity(), Observer, SaveDataCallbacks, AdapterVi
             spinner.adapter = adapter
             spinner.onItemSelectedListener = this
         }
+
+        // spinner trip
+//        val spinnerTrip = findViewById<Spinner>(R.id.spinner_trip)
+        /*spinnerTrip.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            routes.map { it.routeShortName }
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spinner.adapter = adapter
+            spinner.onItemSelectedListener = this
+        }*/
+
 
         progressBar = findViewById(R.id.loadingPanel)
         progressBar.visibility = View.GONE
@@ -218,4 +233,7 @@ class MainActivity : AppCompatActivity(), Observer, SaveDataCallbacks, AdapterVi
             DatePickerDialog(this, this, year, month, day).show()
         }
     }
+
+    fun TextView.Spinner(color: String) = this.setTextColor(color.toInt())
+
 }

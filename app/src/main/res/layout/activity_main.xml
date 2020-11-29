@@ -44,14 +44,14 @@
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:gravity="center"
         android:maxLines="1"
-        tools:text="@tools:sample/date/ddmmyy"
         android:textColor="#777"
         android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="@+id/time_picker"
         app:layout_constraintEnd_toStartOf="@+id/divider_1"
-        android:layout_marginRight="8dp" />
+        app:layout_constraintTop_toTopOf="@+id/time_picker"
+        tools:text="@tools:sample/date/ddmmyy" />
 
     <TextView
         android:id="@+id/stat_detail_1"
@@ -61,20 +61,20 @@
         android:textColor="#777"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/date_picker"
+        app:layout_constraintEnd_toEndOf="@+id/date_picker"
         app:layout_constraintStart_toStartOf="@+id/date_picker"
-        app:layout_constraintEnd_toEndOf="@+id/date_picker" />
+        app:layout_constraintTop_toBottomOf="@+id/date_picker" />
 
     <View
         android:id="@+id/divider_1"
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:background="#ccc"
-        app:layout_constraintTop_toTopOf="@+id/time_picker"
-        app:layout_constraintEnd_toStartOf="@+id/time_picker"
         app:layout_constraintBottom_toBottomOf="@+id/stat_detail_2"
-        android:layout_marginRight="16dp" />
+        app:layout_constraintEnd_toStartOf="@+id/time_picker"
+        app:layout_constraintTop_toTopOf="@+id/time_picker" />
 
     <TextView
         android:id="@+id/time_picker"
@@ -82,13 +82,13 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:maxLines="1"
-        tools:text="@tools:sample/date/hhmm"
         android:textColor="#777"
         android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/date/hhmm" />
 
     <TextView
         android:id="@+id/stat_detail_2"
@@ -99,71 +99,77 @@
         android:textColor="#777"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/time_picker"
+        app:layout_constraintEnd_toEndOf="@+id/time_picker"
         app:layout_constraintStart_toStartOf="@+id/time_picker"
-        app:layout_constraintEnd_toEndOf="@+id/time_picker" />
+        app:layout_constraintTop_toBottomOf="@+id/time_picker" />
 
     <View
         android:id="@+id/divider_2"
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:background="#ccc"
         app:layout_constraintBottom_toBottomOf="@+id/stat_detail_2"
         app:layout_constraintStart_toEndOf="@+id/time_picker"
-        app:layout_constraintTop_toTopOf="@+id/time_picker"
-        android:layout_marginLeft="16dp" />
+        app:layout_constraintTop_toTopOf="@+id/time_picker" />
 
     <TextView
         android:id="@+id/stat_3"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:gravity="center"
         android:maxLines="1"
         android:textColor="#777"
         android:textSize="22sp"
-        app:layout_constraintTop_toTopOf="@+id/time_picker"
         app:layout_constraintStart_toEndOf="@+id/divider_2"
-        android:layout_marginLeft="8dp" />
+        app:layout_constraintTop_toTopOf="@+id/time_picker" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="3dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginLeft="200dp"
         android:layout_weight=".28"
         android:background="@drawable/spinner_border"
         android:orientation="horizontal"
-        android:layout_marginEnd="3dp"
         android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
 
         <Spinner
             android:id="@+id/spinner2"
-            android:layout_width="80dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:maxLines="1"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:layout_marginLeft="10dp"
             android:spinnerMode="dropdown"
-            android:layout_marginStart="5dp"
 
             android:textColor="#777"
             android:textSize="22sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@mipmap/dropdown"
-            android:contentDescription="@string/dropdown" />
+            android:contentDescription="@string/dropdown"
+            android:src="@mipmap/dropdown" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/stat_detail_3"
         android:layout_width="wrap_content"
@@ -173,8 +179,42 @@
         android:textColor="#777"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/stat_3"
+        app:layout_constraintEnd_toEndOf="@+id/stat_3"
         app:layout_constraintStart_toStartOf="@+id/stat_3"
-        app:layout_constraintEnd_toEndOf="@+id/stat_3" />
+        app:layout_constraintTop_toBottomOf="@+id/stat_3" />
+
+    <!--<LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/spinner_border">
+
+        <Spinner
+            android:id="@+id/spinner_trip"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:maxLines="1"
+            android:spinnerMode="dropdown"
+
+            android:textColor="#777"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

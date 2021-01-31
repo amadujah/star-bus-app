@@ -11,7 +11,7 @@ import fr.istic.mob.star.star1adrk.database.models.Trip
 interface TripDao {
 
     @Query("SELECT * FROM trip ORDER BY trip_id")
-    fun loadAllTrip(): List<Trip>
+    fun loadAllTrip(): Cursor
 
     @Insert
     fun insert(trip: Trip)

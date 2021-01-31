@@ -6,11 +6,13 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.database.Cursor
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import fr.istic.mob.star.star1adrk.R
@@ -35,22 +37,23 @@ private val TAG = "DownloadReceiver"
 class DownloadReceiver : BroadcastReceiver() {
 
     companion object {
-        private lateinit var zipFileName: String
+        private var zipFileName: String = ""
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action
 
-        if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
-            val sharedPref = context.getSharedPreferences(
-                context.getString(R.string.pref_key),
-                Context.MODE_PRIVATE
-            ) ?: return
+        val sharedPref = context.getSharedPreferences(
+            context.getString(R.string.pref_key),
+            Context.MODE_PRIVATE
+        ) ?: return
+        val downloadId = sharedPref.getLong(
+            context.getString(R.string.download_id),
+            0
+        )
 
-            val downloadId = sharedPref.getLong(
-                context.getString(R.string.download_id),
-                0
-            )
+        if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
             val query = DownloadManager.Query()
             query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0))
             val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -79,17 +82,42 @@ class DownloadReceiver : BroadcastReceiver() {
                                 0
                             )
                         ) {
-                            Timer("SettingUp", false).schedule(5000) {
-                                //todo getDownloadService(context, downloadPath)
-                                Toast.makeText(context, "", Toast.LENGTH_SHORT).show()
+                            val downloadPath = sharedPref.getString(
+                                context.getString(R.string.download_path), null
+                            )
+                            if (downloadPath != null) {
+                                Timer("SettingUp", false).schedule(1000 * 60 * 1) {
+                                    getDownloadService(context, downloadPath)
+                                    Log.d(TAG, "onReceive: download failed")
+                                    Toast.makeText(context, "Database download failure, download will retry in 5 mins", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
+                    }
+                }
+            }
+        } else {
+            Log.d(TAG, "onReceive: download failed")
+            if (downloadId != intent?.getLongExtra(
+                    DownloadManager.EXTRA_DOWNLOAD_ID,
+                    0
+                )
+            ) {
+                val downloadPath = sharedPref.getString(
+                    context.getString(R.string.download_path), null
+                )
+                if (downloadPath != null) {
+                    Timer("SettingUp", false).schedule(1000 * 60 * 1) {
+                        getDownloadService(context, downloadPath)
+                        Log.d(TAG, "onReceive: download failed")
+                        Toast.makeText(context, "Database download failure, download will retry in 5 mins", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private fun saveJsonInfoFileToDB(context: Context) {
         val histories = getHistoriesFromJson(context)
 
@@ -155,6 +183,7 @@ class DownloadReceiver : BroadcastReceiver() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private fun showNotification(context: Context, downloadPath: String) {
         createNotificationChannel(context)
         val pendingIntent: PendingIntent = PendingIntent.getService(
@@ -175,6 +204,35 @@ class DownloadReceiver : BroadcastReceiver() {
             // notificationId is a unique int for each notification that you must define
             notify(notificationId, builder.build())
         }
+
+        val mNotificationManager =
+            context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notifications = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mNotificationManager.activeNotifications
+        } else {
+            null
+        }
+
+        //check if notif is not visible
+        var visible = false
+        notifications?.forEach {
+            if (it.id == notificationId)
+                visible = true
+        }
+        //if notification not visible download zip
+        if (!visible) {
+            getDownloadService(context, downloadPath)
+        }
+
+        val sharedPref = context.getSharedPreferences(
+            context.getString(R.string.download_path),
+            Context.MODE_PRIVATE
+        ) ?: return
+
+        with(sharedPref.edit()) {
+            putString(context.getString(R.string.download_path), downloadPath)
+            apply()
+        }
     }
 
     private fun createNotificationChannel(context: Context) {
@@ -189,7 +247,7 @@ class DownloadReceiver : BroadcastReceiver() {
             }
             // Register the channel with the system
             val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }

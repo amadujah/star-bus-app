@@ -16,6 +16,15 @@ interface StopTimeDao {
     @Insert
     fun insert(stopTime: StopTime)
 
-   @Query("DELETE FROM stop_time")
+    @Query("DELETE FROM stop_time")
     fun deleteAll()
+
+    @Query("SELECT DISTINCT(arrival_time) FROM stop_time st, trip t, calendar c where t.trip_id = st.trip_id and c.service_id = t.service_id and st.arrival_time >= :startTime and st.arrival_time < :stopTime and st.stop_id =:stopId and t.route_id =:routeId and CAST(c.end_date AS LONG)>= :startDate ORDER BY arrival_time ")
+    fun getStopTimes(
+        startTime: String?,
+        stopTime: String?,
+        routeId: String?,
+        stopId: String?,
+        startDate: Long? = 0
+    ): Cursor
 }

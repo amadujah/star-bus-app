@@ -21,10 +21,6 @@ interface StopDao {
     @Query("SELECT * FROM stop WHERE stop_id = :stopId")
     fun loadStopByStopId(stopId: String): Stop
 
-    @Query(
-        "SELECT * FROM stop, stop_time, trip WHERE stop.stop_id = stop_time.stop_id " +
-                "AND stop_time.trip_id = trip.trip_id " +
-                "AND trip.route_id = :selectionArgs0 AND trip.trip_id = :trip"
-    )
-    fun getStops(selectionArgs0: String, trip: String): Cursor
+    @Query("SELECT DISTINCT s.stop_name, s.stop_id FROM stop s, stop_time st, trip t WHERE s.stop_id = st.stop_id AND st.trip_id = t.trip_id AND t.route_id = :routeId and direction_id = :directionId ORDER by CAST(st.stop_sequence AS INTEGER)")
+    fun getStops(routeId: String?, directionId: String?): Cursor
 }

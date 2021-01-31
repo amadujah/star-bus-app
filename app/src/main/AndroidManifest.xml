@@ -27,6 +27,7 @@
 
 
         <service android:name=".service.DownloadService" />
+        <service android:name=".service.SaveDBService" />
 
         <receiver
             android:name=".receiver.DownloadReceiver"
@@ -36,6 +37,11 @@
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name=".database.StarDBProvider"
+            android:authorities="fr.adrk.provider"
+            android:exported="true"/>
     </application>
 
 </manifest>

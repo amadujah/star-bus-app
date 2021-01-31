@@ -8,4 +8,5 @@
     <string name="heure">Heure</string>
     <string name="ligne_bus">Ligne Bus</string>
     <string name="dropdown">dropdown</string>
+    <string name="download_path">download_path</string>
 </resources>
